@@ -1,0 +1,35 @@
+/* css/styles.css */
+:root {
+  --accent-bg: rgba(11, 31, 58, 0.8);
+}
+
+/* Full-screen breakroom background */
+body {
+  background: url('../images/breakroom.jpg') center/cover no-repeat;
+}
+
+/* Overlay for game container */
+#game-container {
+  background-color: var(--accent-bg) !important;
+}
+
+/* Hide nav when accusing */
+#suspect-nav.d-none {
+  display: none !important;
+}
+
+
+#checklist {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: var(--background-overlay);
+  padding: 10px;
+  border-radius: 8px;
+  width: 150px;
+}
+
+
+#checklist h3 { margin-bottom: 10px; font-size: 1.1rem; }
+#checklist ul { list-style: none; }
+#checklist li { margin: 5px 0; font-size: 0.9rem; }

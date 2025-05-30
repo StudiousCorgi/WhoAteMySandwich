@@ -1,156 +1,152 @@
-const suspects = ['Chase', 'Alicia', 'Mike', 'Matt', 'Sarah'];
-let currentSuspect = 0;
-let guiltyIndex = Math.floor(Math.random() * suspects.length);
+// Data & State
+const suspects = [
+  { name: 'Chase', img: '../suspects/Suspect_Chase.png' },
+  { name: 'Alicia', img: '../suspects/Suspect_Alicia.png' },
+  { name: 'Mike', img: '../suspects/Suspect_Mike.png' },
+  { name: 'Matt', img: '../suspects/Suspect_Matt.png' },
+  { name: 'Sarah', img: '../suspects/Suspect_Sarah.png' }
+];
+let current = 0;
+const guiltyIndex = Math.floor(Math.random() * suspects.length);
 const questioned = new Set();
+let qIdx = 0;
 
+// Questions
 const questionData = [
-  {
-    question: "Ok, Chase, ...",
-    choices: [
-      { text: "Where were you 3 minutes ago?", innocent: "Just working!", guilty: "Uh... probably by the fridge.", },
-      { text: "What lunch did you bring?", innocent: "Skipped lunch and grabbed a coffee.", guilty: "I was just getting coffee...", },
-      { text: "Why are you in a rush to leave?", innocent: "I have a meeting with a client in 5 minutes.", guilty: "Pretty sure I should be on a call? I'm not sure.", },
-      { text: "Did you eat my lunch?", innocent: "I didn't eat anything, but maybe I should after this.", guilty: "No buddy, of course not!", },
+  { q: 'Where were you at noon today?', choices: [
+      { t: 'At my desk', i: 'Just working.', g: 'Probably by the fridge.' },
+      { t: 'Breakroom',   i: 'Grabbing coffee.', g: 'Getting coffee...' },
+      { t: 'On a call',   i: 'With client.',    g: 'Call? Not sure.' },
+      { t: 'In a meeting',i: 'Team sync-up.',   g: 'Meeting? I forgot.' }
     ]
   },
-  {
-    question: "Did you see anyone near my sandwich?",
-    choices: [
-      { text: "No one at all", innocent: "Nobody came in.", guilty: "No idea... maybe someone.", },
-      { text: "Yes, Mike", innocent: "He walked by a bit ago.", guilty: "He? I don't know.", },
-      { text: "Yes, Sarah", innocent: "She was here earlier.", guilty: "Sarah? Can't recall.", },
-      { text: "Not sure", innocent: "I wasn't paying attention.", guilty: "I'm not sure...", },
+  { q: 'Did you see anyone near my sandwich?', choices: [
+      { t: 'No one',     i: 'Nope.',           g: 'Maybe someone.' },
+      { t: 'Mike',       i: 'He walked by.',   g: 'He? I don\'t know.' },
+      { t: 'Sarah',      i: 'She was here.',   g: 'Sarah? Eh.' },
+      { t: 'Not sure',   i: 'Didn\'t watch.', g: 'No clue.' }
     ]
   },
-  {
-    question: "Did you have lunch today?",
-    choices: [
-      { text: "Yes, my own sandwich", innocent: "A turkey sandwich.", guilty: "I had lunch? Maybe.", },
-      { text: "No, not yet", innocent: "I'll eat soon.", guilty: "No...not yet.", },
-      { text: "Grabbed a salad", innocent: "Healthy choice!", guilty: "Salad? No...", },
-      { text: "I share food", innocent: "I share with coworkers.", guilty: "Me? share? Not really.", },
+  { q: 'Did you have lunch today?', choices: [
+      { t: 'My sandwich', i: 'Turkey.',       g: 'Lunch? Maybe.' },
+      { t: 'Not yet',     i: 'Soon.',         g: 'No...' },
+      { t: 'A salad',     i: 'Healthy!',      g: 'Salad? No.' },
+      { t: 'Shared food', i: 'Yes.',          g: 'Not really.' }
     ]
   },
-  {
-    question: "Can I trust you?",
-    choices: [
-      { text: "Absolutely", innocent: "You can.", guilty: "Trust me... maybe.", },
-      { text: "Depends", innocent: "On the situation.", guilty: "Depends? Yes.", },
-      { text: "Not really", innocent: "I'm honest.", guilty: "Well... no.", },
-      { text: "I don't know", innocent: "I believe so.", guilty: "I don't know.", },
+  { q: 'Can I trust you?', choices: [
+      { t: 'Absolutely',   i: 'Of course.',    g: 'Maybe.' },
+      { t: 'Depends',      i: 'Situation.',     g: 'Depends.' },
+      { t: 'Not really',   i: 'I\'m honest.',  g: 'No.' },
+      { t: 'I don\'t know', i: 'I believe so.', g: 'No idea.' }
     ]
   }
 ];
 
-// --- Helpers & Elements ---
-const el = id => document.getElementById(id);
-const show = elem => elem.classList.remove('d-none');
-const hide = elem => elem.classList.add('d-none');
+// Elements
+const carouselInner = document.querySelector('#suspect-carousel .carousel-inner');
 const modal = new bootstrap.Modal('#question-modal');
+const choicesEl = document.getElementById('choices');
+const responseText = document.getElementById('response-text');
+const nextQBtn = document.getElementById('next-question-btn');
+const accuseList = document.getElementById('accuse-list');
+const restartBtn = document.getElementById('restart-btn');
 
-// Build checklist
-const checklistEl = el('check-items');
-suspects.forEach(name => {
+// Build carousel items
+suspects.forEach((sus, idx) => {
+  const item = document.createElement('div');
+  item.className = 'carousel-item';
+  if (idx === 0) item.classList.add('active');
+  item.dataset.index = idx;
+  item.innerHTML = `
+    <img src="${sus.img}" alt="${sus.name}">
+    <h4 class="text-white mt-2">${sus.name}</h4>
+    <button class="btn btn-primary ask-btn mt-2" ${questioned.has(idx)?'disabled':''}>
+      Ask Questions
+    </button>
+  `;
+  carouselInner.append(item);
+});
+
+// Checklist
+const checklistEl = document.getElementById('check-items');
+suspects.forEach(s => {
   const cb = document.createElement('input');
-  cb.type = 'checkbox'; cb.className = 'form-check-input me-1';
-  cb.id = `check-${name}`;
-  const lbl = document.createElement('label');
-  lbl.className = 'form-check-label';
-  lbl.htmlFor = cb.id;
-  lbl.textContent = name;
-  const wrapper = document.createElement('div');
-  wrapper.className = 'form-check';
-  wrapper.append(cb, lbl);
+  cb.type = 'checkbox'; cb.className = 'form-check-input me-1'; cb.id = `check-${s.name}`;
+  const lbl = document.createElement('label'); lbl.className = 'form-check-label'; lbl.htmlFor = cb.id; lbl.textContent = s.name;
+  const wrapper = document.createElement('div'); wrapper.className = 'form-check'; wrapper.append(cb, lbl);
   checklistEl.append(wrapper);
 });
 
-// Load suspect card
-function loadSuspect() {
-  el('suspect-name').textContent = suspects[current];
-  el('suspect-img').src = `images/${suspects[current].toLowerCase()}.jpg`;
-  el('question-btn').disabled = questioned.has(current);
+// Update current on slide
+function updateCurrent() {
+  const active = document.querySelector('.carousel-item.active');
+  current = parseInt(active.dataset.index, 10);
 }
+document.getElementById('suspect-carousel').addEventListener('slid.bs.carousel', updateCurrent);
 
 // Ask questions
-function ask() {
-  qIdx = 0;
-  showQuestion();
-  modal.show();
-}
-
 function showQuestion() {
-  const data = questions[qIdx];
-  el('question-title').textContent = data.q;
-  const choices = el('choices');
-  choices.innerHTML = '';
+  const data = questionData[qIdx];
+  document.getElementById('question-title').textContent = data.q;
+  choicesEl.innerHTML = '';
   data.choices.forEach(c => {
     const btn = document.createElement('button');
     btn.className = 'btn btn-outline-light';
     btn.textContent = c.t;
-    btn.onclick = () => answer(c);
-    choices.append(btn);
+    btn.onclick = () => {
+      responseText.textContent = current===guiltyIndex ? c.g : c.i;
+      nextQBtn.style.display = 'inline-block';
+    };
+    choicesEl.append(btn);
   });
-  el('response-text').textContent = '';
-  hide(el('next-question-btn'));
+  responseText.textContent = '';
+  nextQBtn.style.display = 'none';
 }
 
-function answer(choice) {
-  const resp = current === guilty ? choice.g : choice.i;
-  el('response-text').textContent = resp;
-  show(el('next-question-btn'));
-}
+// Listen ask-button clicks
+document.addEventListener('click', e => {
+  if (e.target.matches('.ask-btn')) {
+    qIdx = 0;
+    showQuestion();
+    modal.show();
+  }
+});
 
-el('next-question-btn').onclick = () => {
+// Next question
+nextQBtn.addEventListener('click', () => {
   qIdx++;
-  if (qIdx < questions.length) {
+  if (qIdx < questionData.length) {
     showQuestion();
   } else {
-    endQuestions();
+    questioned.add(current);
+    modal.hide();
+    document.querySelector(`.carousel-item[data-index="${current}"] .ask-btn`).disabled = true;
+    if (questioned.size === suspects.length) startAccusation();
   }
-};
-
-function endQuestions() {
-  questioned.add(current);
-  modal.hide();
-  loadSuspect();
-  if (questioned.size === suspects.length) startAccusation();
-}
+});
 
 // Accusation
 function startAccusation() {
-  hide(el('suspect-nav'));
-  hide(el('question-btn'));
-  show(el('accusation-screen'));
-  const list = el('accuse-list');
+  document.getElementById('suspect-carousel').classList.add('d-none');
+  document.getElementById('accusation-screen').classList.remove('d-none');
   suspects.forEach((s, i) => {
-    const item = document.createElement('button');
-    item.className = 'list-group-item list-group-item-action';
-    item.textContent = s;
-    item.onclick = () => makeAccusation(i);
-    list.append(item);
+    const btn = document.createElement('button');
+    btn.className = 'list-group-item list-group-item-action';
+    btn.textContent = s.name;
+    btn.onclick = () => {
+      document.getElementById('accusation-screen').classList.add('d-none');
+      document.getElementById('result-screen').classList.remove('d-none');
+      document.getElementById('result-text').textContent = i===guiltyIndex
+        ? 'You caught the sandwich thief!'
+        : "Yeah, HR is going to hear about this...";
+    };
+    accuseList.append(btn);
   });
 }
 
-function makeAccusation(idx) {
-  hide(el('accusation-screen'));
-  show(el('result-screen'));
-  el('result-text').textContent =
-    idx === guilty
-      ? 'You caught the sandwich thief!'
-      : "Yeah, HR is going to hear about this...";
-}
-
-// Restart & navigation
-el('restart-btn').onclick = () => location.reload();
-el('prev-btn').onclick = () => {
-  current = (current + suspects.length - 1) % suspects.length;
-  loadSuspect();
-};
-el('next-btn').onclick = () => {
-  current = (current + 1) % suspects.length;
-  loadSuspect();
-};
-el('question-btn').onclick = ask;
+// Restart
+restartBtn.addEventListener('click', () => location.reload());
 
 // Initialize
-loadSuspect();
+updateCurrent();

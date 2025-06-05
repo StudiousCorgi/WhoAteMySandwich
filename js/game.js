@@ -1,152 +1,157 @@
-// Data & State
 const suspects = [
-  { name: 'Chase', img: '../suspects/Suspect_Chase.png' },
-  { name: 'Alicia', img: '../suspects/Suspect_Alicia.png' },
-  { name: 'Mike', img: '../suspects/Suspect_Mike.png' },
-  { name: 'Matt', img: '../suspects/Suspect_Matt.png' },
-  { name: 'Sarah', img: '../suspects/Suspect_Sarah.png' }
+    {
+        name: "Matt",
+        img: "Suspect_Matt.png",
+        isGuilty: false,
+        questions: ["I was microwaving Ramen.", "Nope, just the vending machine guy.", "Only if it’s toasted.", "Nope, forgot it again."],
+        guiltyAnswers: ["Why are you asking me that again?", "You're obsessed with this fridge!", "What? Who told you that?", "Why are you interrogating me?"],
+        sarcastic: ["Asked that already, Sherlock.", "Fridge questions again? Wow.", "Seriously? You need help.", "Get new material."],
+        hints: ["sniffs you back weirdly", "laughs nervously", "wipes mouth discreetly"]
+    },
+    {
+        name: "Mike",
+        img: "Suspect_Mike.png",
+        isGuilty: false,
+        questions: ["I ate at my desk.", "I saw Chase go in.", "Not a fan.", "I had tacos."],
+        guiltyAnswers: ["No comment.", "Maybe I did… so what?", "I only eat Organic", "You got proof? Thought not."],
+        sarcastic: ["Still on this, huh?", "You ever do real work?", "Come on dude.", "Find another hobby."],
+        hints: ["burps... suspiciously", "rubs belly and grins", "has crumbs on his shirt"]
+    },
+    {
+        name: "Sarah",
+        img: "Suspect_Sarah.png",
+        isGuilty: false,
+        questions: ["I was tutoring a student.", "No, sorry!", "Sure! But turkey is better.", "I packed leftovers."],
+        guiltyAnswers: ["You think it was me!?", "Why would I know that?", "Stop asking weird questions.", "Ugh, fine. It was me."],
+        sarcastic: ["Déjà vu?", "This again?", "You’re really bored, huh?", "Try using your brain."],
+        hints: ["smiles nervously", "hides something behind her", "mustard on her sleeve"]
+    },
+    {
+        name: "Alicia",
+        img: "Suspect_Alicia.png",
+        isGuilty: false,
+        questions: ["Out getting coffee.", "Maybe Sarah?", "Ew, no thanks.", "Nope. Was planning to DoorDash."],
+        guiltyAnswers: ["That's… not important.", "I didn’t see anyone, okay?!", "What makes you think that?", "You’re out of line."],
+        sarcastic: ["You asked that already!", "Move on!", "Fridge again? LOL", "Repeating won’t help."],
+        hints: ["looks at you suspiciously", "fidgets with her watch", "has crumbs on her blazer"]
+    },
+    {
+        name: "Chase",
+        img: "Suspect_Chase.png",
+        isGuilty: false,
+        questions: ["Golf call with my dad.", "Only the janitor.", "Absolutely not.", "Private chef sent it late."],
+        guiltyAnswers: ["*visibly sweating*", "I don’t *need* to steal!", "Preposterous!", "This is beneath me."],
+        sarcastic: ["Unoriginal.", "Try harder.", "Yawn.", "Again? Really?"],
+        hints: ["*blushes*", "has a food in teeth", "wipes mustard off his lip"]
+    }
 ];
-let current = 0;
-const guiltyIndex = Math.floor(Math.random() * suspects.length);
-const questioned = new Set();
-let qIdx = 0;
 
-// Questions
-const questionData = [
-  { q: 'Where were you at noon today?', choices: [
-      { t: 'At my desk', i: 'Just working.', g: 'Probably by the fridge.' },
-      { t: 'Breakroom',   i: 'Grabbing coffee.', g: 'Getting coffee...' },
-      { t: 'On a call',   i: 'With client.',    g: 'Call? Not sure.' },
-      { t: 'In a meeting',i: 'Team sync-up.',   g: 'Meeting? I forgot.' }
-    ]
-  },
-  { q: 'Did you see anyone near my sandwich?', choices: [
-      { t: 'No one',     i: 'Nope.',           g: 'Maybe someone.' },
-      { t: 'Mike',       i: 'He walked by.',   g: 'He? I don\'t know.' },
-      { t: 'Sarah',      i: 'She was here.',   g: 'Sarah? Eh.' },
-      { t: 'Not sure',   i: 'Didn\'t watch.', g: 'No clue.' }
-    ]
-  },
-  { q: 'Did you have lunch today?', choices: [
-      { t: 'My sandwich', i: 'Turkey.',       g: 'Lunch? Maybe.' },
-      { t: 'Not yet',     i: 'Soon.',         g: 'No...' },
-      { t: 'A salad',     i: 'Healthy!',      g: 'Salad? No.' },
-      { t: 'Shared food', i: 'Yes.',          g: 'Not really.' }
-    ]
-  },
-  { q: 'Can I trust you?', choices: [
-      { t: 'Absolutely',   i: 'Of course.',    g: 'Maybe.' },
-      { t: 'Depends',      i: 'Situation.',     g: 'Depends.' },
-      { t: 'Not really',   i: 'I\'m honest.',  g: 'No.' },
-      { t: 'I don\'t know', i: 'I believe so.', g: 'No idea.' }
-    ]
-  }
-];
+const imgEl = document.getElementById("suspect-img");
+const nameEl = document.getElementById("suspect-name");
+const responseBox = document.getElementById("response-box");
+const checklistEl = document.getElementById("checklist");
+const askedTracker = suspects.map(() => [false, false, false, false]);
+const hintedTracker = suspects.map(() => false);
 
-// Elements
-const carouselInner = document.querySelector('#suspect-carousel .carousel-inner');
-const modal = new bootstrap.Modal('#question-modal');
-const choicesEl = document.getElementById('choices');
-const responseText = document.getElementById('response-text');
-const nextQBtn = document.getElementById('next-question-btn');
-const accuseList = document.getElementById('accuse-list');
-const restartBtn = document.getElementById('restart-btn');
+// Randomly select a guilty suspect
+let currentIndex = 0;
+let guiltyIndex = Math.floor(Math.random() * suspects.length);
+suspects[guiltyIndex].isGuilty = true;
 
-// Build carousel items
-suspects.forEach((sus, idx) => {
-  const item = document.createElement('div');
-  item.className = 'carousel-item';
-  if (idx === 0) item.classList.add('active');
-  item.dataset.index = idx;
-  item.innerHTML = `
-    <img src="${sus.img}" alt="${sus.name}">
-    <h4 class="text-white mt-2">${sus.name}</h4>
-    <button class="btn btn-primary ask-btn mt-2" ${questioned.has(idx)?'disabled':''}>
-      Ask Questions
-    </button>
-  `;
-  carouselInner.append(item);
-});
-
-// Checklist
-const checklistEl = document.getElementById('check-items');
-suspects.forEach(s => {
-  const cb = document.createElement('input');
-  cb.type = 'checkbox'; cb.className = 'form-check-input me-1'; cb.id = `check-${s.name}`;
-  const lbl = document.createElement('label'); lbl.className = 'form-check-label'; lbl.htmlFor = cb.id; lbl.textContent = s.name;
-  const wrapper = document.createElement('div'); wrapper.className = 'form-check'; wrapper.append(cb, lbl);
-  checklistEl.append(wrapper);
-});
-
-// Update current on slide
-function updateCurrent() {
-  const active = document.querySelector('.carousel-item.active');
-  current = parseInt(active.dataset.index, 10);
-}
-document.getElementById('suspect-carousel').addEventListener('slid.bs.carousel', updateCurrent);
-
-// Ask questions
-function showQuestion() {
-  const data = questionData[qIdx];
-  document.getElementById('question-title').textContent = data.q;
-  choicesEl.innerHTML = '';
-  data.choices.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'btn btn-outline-light';
-    btn.textContent = c.t;
-    btn.onclick = () => {
-      responseText.textContent = current===guiltyIndex ? c.g : c.i;
-      nextQBtn.style.display = 'inline-block';
-    };
-    choicesEl.append(btn);
-  });
-  responseText.textContent = '';
-  nextQBtn.style.display = 'none';
+// Initialize the suspect image and name
+function updateSuspect() {
+    const suspect = suspects[currentIndex];
+    imgEl.src = suspect.img;
+    nameEl.textContent = suspect.name;
+    document.querySelectorAll(".question-btn").forEach(btn => {
+        const i = btn.getAttribute("data-index");
+        btn.disabled = askedTracker[currentIndex][i];
+    });
+    responseBox.classList.add("d-none");
 }
 
-// Listen ask-button clicks
-document.addEventListener('click', e => {
-  if (e.target.matches('.ask-btn')) {
-    qIdx = 0;
-    showQuestion();
-    modal.show();
-  }
-});
 
-// Next question
-nextQBtn.addEventListener('click', () => {
-  qIdx++;
-  if (qIdx < questionData.length) {
-    showQuestion();
-  } else {
-    questioned.add(current);
-    modal.hide();
-    document.querySelector(`.carousel-item[data-index="${current}"] .ask-btn`).disabled = true;
-    if (questioned.size === suspects.length) startAccusation();
-  }
-});
 
-// Accusation
-function startAccusation() {
-  document.getElementById('suspect-carousel').classList.add('d-none');
-  document.getElementById('accusation-screen').classList.remove('d-none');
-  suspects.forEach((s, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'list-group-item list-group-item-action';
-    btn.textContent = s.name;
-    btn.onclick = () => {
-      document.getElementById('accusation-screen').classList.add('d-none');
-      document.getElementById('result-screen').classList.remove('d-none');
-      document.getElementById('result-text').textContent = i===guiltyIndex
-        ? 'You caught the sandwich thief!'
-        : "Yeah, HR is going to hear about this...";
-    };
-    accuseList.append(btn);
-  });
+function handleQuestion(index) {
+    const suspects = suspects[currentIndex];
+    const alreadyAsked = askedTracker[currentIndex][index];
+
+    let response = "";
+    if (alreadyAsked) {
+        response = suspects.sarcastic[index % suspects.sarcastic.length];
+    } else {
+        response = suspects.isGuilty
+            ? suspects.guiltyAnswers[index % suspects.guiltyAnswers.length]
+            : suspects.questions[index % suspects.questions.length];
+        askedTracker[currentIndex][index] = true;
+    }
+
+    document.querySelectorAll(".question-btn")[index].disabled = true;
+    showResponse(response);
 }
 
-// Restart
-restartBtn.addEventListener('click', () => location.reload());
+function showResponse(text) {
+    responseBox.textContent = text;
+    responseBox.classList.remove("d-none");
+}
 
-// Initialize
-updateCurrent();
+function addToChecklist(name) {
+    if (!Array.from(checklistEl.children).some(li => li.textContent === name)) {
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = name;
+        checklistEl.appendChild(li);
+    }
+}
+
+function handleHint() {
+    if (hintedTracker[currentIndex]) {
+        showResponse("You’ve already searched here.");
+        return;
+    }
+
+    const actions = ["Sniff for roast beef", "Check for crumbs", "Look for mustard stains"];
+    const action = actions[Math.floor(Math.random() * actions.length)];
+
+    const suspect = suspects[currentIndex];
+    let response = "You found nothing unusual.";
+    if (suspect.isGuilty) {
+        response = `${action}: ${suspect.hints ? suspect.hints[Math.floor(Math.random() * suspect.hints.length)] : "Something feels off..."}`;
+    } else {
+        response = `${action}: ${suspect.name} looks confused.`;
+    }
+
+    hintedTracker[currentIndex] = true;
+    showResponse(response);
+}
+
+function accuseCurrentSuspect() {
+    const suspect = suspects[currentIndex];
+    addToChecklist(suspect.name);
+    if (suspect.isGuilty) {
+        alert("🎉 You caught the sandwich thief!");
+    } else {
+        alert("😬 Yeah, HR is going to hear about this...");
+    }
+}
+
+document.getElementById("prev-btn").addEventListener("click", () => {
+    currentIndex = (currentIndex - 1 + suspects.length) % suspects.length;
+    updateSuspect();
+});
+document.getElementById("next-btn").addEventListener("click", () => {
+    currentIndex = (currentIndex + 1) % suspects.length;
+    updateSuspect();
+});
+document.querySelectorAll(".question-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const index = parseInt(btn.getAttribute("data-index"));
+        handleQuestion(index);
+    });
+});
+document.getElementById("hint-btn").addEventListener("click", handleHint);
+document.getElementById("accuse-btn").addEventListener("click", accuseCurrentSuspect);
+
+
+// Init
+updateSuspect();

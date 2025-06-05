@@ -1,93 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="./css/bootstrap.css">
-  <link rel="stylesheet" href="./css/styles.css">
- 
-  <title>Who Ate My Sandwich</title>
+    <meta charset="UTF-8">
+    
+    <link rel="stylesheet" href="./css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="suspects" href="./suspects/">
+    <title>Who Ate My Sandwich</title>
 </head>
 
-<body class="bg-dark text-white">
+<body >
 
-  <div class="container py-5">
-    <div id="game-container" class="position-relative rounded-3 p-4">
-
-      <!-- Suspect Carousel -->
-      <div id="suspect-carousel" class="carousel slide carousel-fade mb-4" data-bs-ride="false" data-bs-wrap="false">
-
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="./suspects/Suspect_Alicia.png" class="d-block w-100" alt="Suspect 1">
-          </div>
-          <div class="carousel-item">
-            <img src="./suspects/Suspect_Matt.png" class="d-block w-100" alt="Suspect 2">
-          </div>
-          <div class="carousel-item">
-            <img src="./suspects/Suspect_Sarah.png" class="d-block w-100" alt="Suspect 3">
-          </div>
-          <div class="carousel-item">
-            <img src="./suspects/Suspect_Chase.png" class="d-block w-100" alt="Suspect 4">
-          </div>
-          <div class="carousel-item">
-            <img src="./suspects/Suspect_Mike.png" class="d-block w-100" alt="Suspect 5">
-          </div>
+    <div class="container text-center mt-4 game-container" style="background-image: url('./images/BreakRoom.jpg'); background-size: cover;">
+        <h1 class="text-light">Who Ate My Sandwich?</h1>
+        <div id="suspect-carousel" class="my-4">
+            <button id="prev-btn" class="btn btn-primary me-2">← Prev</button>
+            <img id="suspect-img" src="./suspects/Suspect_Matt.png" alt="Suspect" class="suspect-img">
+            <button id="next-btn" class="btn btn-primary ms-2">Next →</button>
+            <h3 id="suspect-name" class="text-light mt-3">Matt</h3>
         </div>
 
-  <button class="carousel-control-prev" type="button" data-bs-target="#suspect-carousel" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span><span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#suspect-carousel" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span><span class="visually-hidden">Next</span>
-  </button>
-</div>
-
-      <!-- Question Modal -->
-      <div class="modal fade" id="question-modal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content bg-secondary bg-opacity-75 text-white">
-            <div class="modal-header border-0">
-              <h5 class="modal-title" id="question-title"></h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-              <div id="choices" class="d-grid gap-2"></div>
-              <p id="response-text" class="mt-3"></p>
-            </div>
-            <div class="modal-footer border-0">
-              <button class="btn btn-light" id="next-question-btn">Next</button>
-              <button class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
+        <div class="questions mb-3" id="question-buttons">
+            <button class="btn btn-secondary question-btn" data-index="0">Where were you at lunch?</button>
+            <button class="btn btn-secondary question-btn" data-index="1">Did you see anyone near the fridge?</button>
+            <button class="btn btn-secondary question-btn" data-index="2">Do you like roast beef?</button>
+            <button class="btn btn-secondary question-btn" data-index="3">Did you bring your lunch?</button>
         </div>
-      </div>
 
-      <!-- Accusation Screen -->
-      <div id="accusation-screen" class="text-center d-none">
-        <h2 class="mb-4">Who ate your sandwich?</h2>
-        <div id="accuse-list" class="list-group mb-3"></div>
-      </div>
+        <div id="response-box" class="alert alert-info d-none"></div>
+        <button id="hint-btn" class="btn btn-warning mt-2">Search for Clues 🔍</button>
 
-      <!-- Result Screen -->
-      <div id="result-screen" class="text-center d-none">
-        <p id="result-text" class="fs-4 mb-4"></p>
-        <button class="btn btn-light" id="restart-btn">Play Again</button>
-      </div>
-
-      <!-- Checklist -->
-      <div id="checklist" class="position-absolute bottom-0 end-0 m-3 p-3 bg-secondary bg-opacity-75 rounded-3">
-        <h5>Checklist</h5>
-        <div id="check-items" class="form-check"></div>
-      </div>
-
+        <div class="mt-4 text-light">
+            <h4>Checklist</h4>
+            <ul id="checklist" class="list-group"></ul>
+            <button class="btn btn-danger mt-2" id="accuse-btn">Accuse This Suspect</button>
+        </div>
     </div>
-  </div>
+    <H2>Interrogation Room</H2>
+        <div class="suspects">
+           <div class="row justify-content-center">
+                <div class="col-auto">
+                    <div class="suspect-card">
+                    <img src="./suspects/Suspect_Matt.png" alt="Matt" class="suspect-img">
+                    <h3>Matt</h3>
+                    <p>Matt is known for his love food in general but he also has a secret stash of snacks.</p>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="suspect-card">
+                      <img src="./suspects/Suspect_Mike.png" alt="Mike" class="suspect-img">
+                      <h3>Mike</h3>
+                      <p>Mike is always seen with a salad or eating organic, it's a lifestyle choice but he has been known to sneak in a sandwich or two.</p>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="suspect-card">
+                    <img src="./suspects/Suspect_Sarah.png" alt="Sarah" class="suspect-img">
+                    <h3>Sarah</h3>
+                    <p>Sarah has a history of using items from the fridge without looking at the names. She's so busy that she often grabs the wrong lunch.</p>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="suspect-card">
+                    <img src="./suspects/Suspect_Chase.png" alt="Chase" class="suspect-img">
+                    <h3>Chase</h3>
+                    <p>Chase usually makes a big show of his "high dollar" lunches, but he didn't have one today...</p>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div class="suspect-card">
+                    <img src="./suspects/Suspect_Alicia.png" alt="Alicia" class="suspect-img">
+                    <h3>Alicia</h3>
+                    <p>Alicia is known for her love of sandwiches but is also very secretive about her lunch choices. She even has a shelf of gourmet ingredients for her lunches.</p>
+                </div>
+            </div>
+        </div>
 
+    <footer>
+        <p class="text-light">© 2025 Who Ate My Sandwich? | All Rights Reserved</p>
+        <p class="text-light">Created by <a href="https://github.com/StudiousCorgi">StudiousCorgi</a></p>
+    </footer>
 
-  <!-- Game Logic -->
-  <script src="./js/game.js"></script>
-  <script src="./js/bootstrap.js"></script>
+    <script src="./js/game.js"></script>
 </body>
-
 </html>

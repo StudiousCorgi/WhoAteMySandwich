@@ -59,10 +59,10 @@ let guiltyIndex = Math.floor(Math.random() * suspects.length);
 suspects[guiltyIndex].isGuilty = true;
 
 // Initialize the suspect image and name
-function updateSupects() {
-    const suspect = suspects[currentIndex];
-    imgEl.src = suspect.img;
-    nameEl.textContent = suspect.name;
+function updateSuspects() {
+    const currentSuspect = suspects[currentIndex];
+    imgEl.src = currentSuspect.img;
+    nameEl.textContent = currentSuspect.name;
     document.querySelectorAll(".question-btn").forEach(btn => {
         const i = btn.getAttribute("data-index");
         btn.disabled = askedTracker[currentIndex][i];
@@ -70,19 +70,17 @@ function updateSupects() {
     responseBox.classList.add("d-none");
 }
 
-
-
 function handleQuestion(index) {
-    const suspects = suspects[currentIndex][index];
+    const currentSuspect = suspects[currentIndex];
     const alreadyAsked = askedTracker[currentIndex][index];
 
     let response = "";
     if (alreadyAsked) {
-        response = suspects.sarcastic[index % suspects.sarcastic.length];
+        response = currentSuspect.sarcastic[index % currentSuspect.sarcastic.length];
     } else {
-        response = suspects.isGuilty
-            ? suspects.guiltyAnswers[index % suspects.guiltyAnswers.length]
-            : suspects.questions[index % suspects.questions.length];
+        response = currentSuspect.isGuilty
+            ? currentSuspect.guiltyAnswers[index % currentSuspect.guiltyAnswers.length]
+            : currentSuspect.questions[index % currentSuspect.questions.length];
         askedTracker[currentIndex][index] = true;
     }
 
@@ -113,12 +111,12 @@ function handleHint() {
     const actions = ["Sniff for roast beef", "Check for crumbs", "Look for mustard stains"];
     const action = actions[Math.floor(Math.random() * actions.length)];
 
-    const suspect = suspects[currentIndex];
+    const currentSuspect = suspects[currentIndex];
     let response = "You found nothing unusual.";
-    if (suspect.isGuilty) {
-        response = `${action}: ${suspect.hints ? suspect.hints[Math.floor(Math.random() * suspect.hints.length)] : "Something feels off..."}`;
+    if (currentSuspect.isGuilty) {
+        response = `${action}: ${currentSuspect.hints ? currentSuspect.hints[Math.floor(Math.random() * currentSuspect.hints.length)] : "Something feels off..."}`;
     } else {
-        response = `${action}: ${suspect.name} looks confused.`;
+        response = `${action}: ${currentSuspect.name} looks confused.`;
     }
 
     hintedTracker[currentIndex] = true;
@@ -126,9 +124,9 @@ function handleHint() {
 }
 
 function accuseCurrentSuspect() {
-    const suspect = suspects[currentIndex];
-    addToChecklist(suspect.name);
-    if (suspect.isGuilty) {
+    const currentSuspect = suspects[currentIndex];
+    addToChecklist(currentSuspect.name);
+    if (currentSuspect.isGuilty) {
         alert("🎉 You caught the sandwich thief!");
     } else {
         alert("😬 Yeah, HR is going to hear about this...");
@@ -137,11 +135,11 @@ function accuseCurrentSuspect() {
 
 document.getElementById("prev-btn").addEventListener("click", () => {
     currentIndex = (currentIndex - 1 + suspects.length) % suspects.length;
-    updateSupects();
+    updateSuspects();
 });
 document.getElementById("next-btn").addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % suspects.length;
-    updateSupects();
+    updateSuspects();
 });
 document.querySelectorAll(".question-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -152,7 +150,6 @@ document.querySelectorAll(".question-btn").forEach(btn => {
 document.getElementById("hint-btn").addEventListener("click", handleHint);
 document.getElementById("accuse-btn").addEventListener("click", accuseCurrentSuspect);
 
-
 // Initiate the game by updating suspects
-updateSupects();
-function questionHandler(i) { handleQuestion(i); }
+updateSuspects();
+function questionHandler(i) { handleQuestion(i)};

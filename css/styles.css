@@ -26,3 +26,17 @@ h2 {
 .suspects {
     padding: 15px;
 }
+
+.bg-breakroom {
+    background: url('../images/BG_Office.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+body {
+    color: white;
+}
+.card {
+    background-color: rgba(255, 255, 255, 0.9);
+}
+.card-body {
+    color: black;
+}

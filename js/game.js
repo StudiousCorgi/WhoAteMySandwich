@@ -59,7 +59,7 @@ let guiltyIndex = Math.floor(Math.random() * suspects.length);
 suspects[guiltyIndex].isGuilty = true;
 
 // Initialize the suspect image and name
-function updateSuspect() {
+function updateSupects() {
     const suspect = suspects[currentIndex];
     imgEl.src = suspect.img;
     nameEl.textContent = suspect.name;
@@ -73,7 +73,7 @@ function updateSuspect() {
 
 
 function handleQuestion(index) {
-    const suspects = suspects[currentIndex];
+    const suspects = suspects[currentIndex][index];
     const alreadyAsked = askedTracker[currentIndex][index];
 
     let response = "";
@@ -137,11 +137,11 @@ function accuseCurrentSuspect() {
 
 document.getElementById("prev-btn").addEventListener("click", () => {
     currentIndex = (currentIndex - 1 + suspects.length) % suspects.length;
-    updateSuspect();
+    updateSupects();
 });
 document.getElementById("next-btn").addEventListener("click", () => {
     currentIndex = (currentIndex + 1) % suspects.length;
-    updateSuspect();
+    updateSupects();
 });
 document.querySelectorAll(".question-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -153,5 +153,6 @@ document.getElementById("hint-btn").addEventListener("click", handleHint);
 document.getElementById("accuse-btn").addEventListener("click", accuseCurrentSuspect);
 
 
-// Init
-updateSuspect();
+// Initiate the game by updating suspects
+updateSupects();
+function questionHandler(i) { handleQuestion(i); }

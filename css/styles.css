@@ -3,8 +3,8 @@ body {
     font-family: Arial, sans-serif;
 }
 .suspect-img {
-    width: 200px;
-    height: 200px;
+    width: auto;
+    height: 450px;
     border-radius: 25%;
     object-fit: contain;
     transition: opacity 0.5s;

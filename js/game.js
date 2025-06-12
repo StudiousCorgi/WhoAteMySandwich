@@ -1,6 +1,6 @@
 const suspects = [
     {
-        name: "Matt",
+        name: "Zack",
         img: "Suspect_Matt.png",
         isGuilty: false,
         questions: ["I was microwaving Ramen.", "Nope, just the vending machine guy.", "Only if it’s toasted.", "Nope, forgot it again."],

@@ -31,6 +31,15 @@ h2 {
     background: url('../images/BG_Office.jpg') no-repeat center center fixed;
     background-size: cover;
 }
+
+#game-container {
+  background: url('../images/BreakRoom.jpg') center/cover no-repeat;
+  background-size: cover;
+  box-shadow: 0 0 15px rgba(0,0,0,0.7);
+  border: rgb(2, 2, 2) solid 5px;
+  border-radius: 10px;
+  padding: 20px;
+}
 body {
     color: white;
 }

@@ -1,12 +1,12 @@
 const suspects = [
     {
-        name: "Zack",
+        name: "Matt",
         img: "Suspect_Matt.png",
         isGuilty: false,
-        questions: ["I was microwaving Ramen.", "Nope, just the vending machine guy.", "Only if it’s toasted.", "Nope, forgot it again."],
-        guiltyAnswers: ["Why are you asking me that again?", "You're obsessed with this fridge!", "What? Who told you that?", "Why are you interrogating me?"],
-        sarcastic: ["Asked that already, Sherlock.", "Fridge questions again? Wow.", "Seriously? You need help.", "Get new material."],
-        hints: ["sniffs you back weirdly", "laughs nervously", "wipes mouth discreetly"]
+        questions: ["I was microwaving a TV dinner, Lunch of Champions.", "Nope, I'm waitig for another Office Party. I dream about those wingz!", "Only if it’s a Super Scooby sandwich.", "Nope, I'm sure the wife packed me something."],
+        guiltyAnswers: ["Why ask me? Sounds like a *YOU* problem?", "You're obsessed with this fridge!", "Wouldn't you like to know?", "I ain't do a thing so why are you asking?"],
+        sarcastic: ["Asked that already, Sherlock.", "I don't know, dude, didn't you ask that already?", "Seriously? You need help.", "Broken clock is only right twice a day. This ain't that time.."],
+        hints: ["Steps away slowly", "chuckles nervously", "wipes mouth discreetly"]
     },
     {
         name: "Mike",
@@ -34,6 +34,15 @@ const suspects = [
         guiltyAnswers: ["That's… not important.", "I didn’t see anyone, okay?!", "What makes you think that?", "You’re out of line."],
         sarcastic: ["You asked that already!", "Move on!", "Fridge again? LOL", "Repeating won’t help."],
         hints: ["looks at you suspiciously", "fidgets with her watch", "has crumbs on her blazer"]
+    },
+    {
+        name: "Zack",
+        img: "Suspect_Zack.png",
+        isGuilty: false,
+        questions: ["I was microwaving Ramen.", "Nope, just the vending machine guy.", "Only if it’s toasted.", "Nope, forgot it again."],
+        guiltyAnswers: ["Why are you asking me that again?", "You're obsessed with this fridge!", "What? Who told you that?", "Why are you interrogating me?"],
+        sarcastic: ["Asked that already, Sherlock.", "Fridge questions again? Wow.", "Seriously? You need help.", "Get new material."],
+        hints: ["sniffs you back weirdly", "laughs nervously", "wipes mouth discreetly"]
     },
     {
         name: "Chase",

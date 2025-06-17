@@ -162,3 +162,22 @@ document.getElementById("accuse-btn").addEventListener("click", accuseCurrentSus
 // Initiate the game by updating suspects
 updateSuspects();
 function questionHandler(i) { handleQuestion(i)};
+
+document.getElementById("play-again-btn").addEventListener("click", function() {
+    // Reset trackers
+    for (let i = 0; i < askedTracker.length; i++) {
+        askedTracker[i] = [false, false, false, false];
+        hintedTracker[i] = false;
+    }
+    // Pick a new guilty suspect
+    suspects.forEach(s => s.isGuilty = false);
+    guiltyIndex = Math.floor(Math.random() * suspects.length);
+    suspects[guiltyIndex].isGuilty = true;
+    // Reset to first suspect
+    currentIndex = 0;
+    // Update UI
+    updateSuspect();
+    // Clear checklist and response
+    checklistEl.innerHTML = "";
+    responseBox.classList.add("d-none");
+});

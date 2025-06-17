@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
 }
@@ -14,32 +13,32 @@ body {
     color: #ccc;
 }
 
-h2 {
-    font-size: 1.2em;
-    margin: 10px 0;
-    color: #fff;
+.suspects h2 {
+    font-size: 535t;
+    font-weight: bold;
     text-align: center;
+    margin: 10px 0;
+    color: #efe9fb;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     font-weight: bold;
 }
 
 .suspects {
-    padding: 15px;
+    background: linear-gradient(to bottom, rgba(76, 87, 97, 0.8), rgba(182, 182, 182, 0.5)), url('../images/ToTheStars.jpg') no-repeat center center fixed;
+    box-shadow: 0 0 15px rgba(0,0,0,0.7);
+    border: rgb(2, 2, 2) solid 5px;
+    border-radius: 10px;
+    padding: 5px;
+    font-size: large;
 }
+
+
 
 .bg-breakroom {
     background: url('../images/BG_Office.jpg') no-repeat center center fixed;
     background-size: cover;
 }
 
-#game-container {
-  background: url('../images/BreakRoom.jpg') center/cover no-repeat;
-  background-size: cover;
-  box-shadow: 0 0 15px rgba(0,0,0,0.7);
-  border: rgb(2, 2, 2) solid 5px;
-  border-radius: 10px;
-  padding: 20px;
-}
 body {
     color: white;
 }
